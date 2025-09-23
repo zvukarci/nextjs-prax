@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "Localhost",
+            "database": "db.sqlite"
+        }
+    ],
+    "editor.tabSize": 2,
+    "editor.formatOnSave": true
+}

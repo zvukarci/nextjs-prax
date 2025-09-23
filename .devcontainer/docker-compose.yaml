@@ -1,0 +1,14 @@
+services:
+  dev:
+    build:
+      context: ..
+      target: dev
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /home/node/app
+    command: /bin/sh -c "while sleep 1; do :; done"
+    environment: {}
+    volumes:
+      - ..:/home/node/app
+      - bash_history:/commandhistory
+volumes:
+  bash_history:
