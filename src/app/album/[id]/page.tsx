@@ -12,11 +12,17 @@ export default async function AlbumDetailPage({
     const dialect = new SqliteDialect({ database: new SQLite("db.sqlite") });
     const db = new Kysely<DB>({ dialect });
 
-    const albums = await db
+    const album = await db
         .selectFrom("albums")
-        .select(["albums.name", "albums.release_date"])
+        .innerJoin("authors", "authors.id", "albums.author_id")
+        .select([
+            "albums.name",
+            "albums.release_date",
+            "authors.name as author_name",
+        ])
         .where("albums.id", "=", Number(id))
-        .execute();
+        .executeTakeFirst();
+
     const songs = await db
         .selectFrom("songs")
         .select(["songs.id", "songs.name", "songs.duration"])
@@ -26,12 +32,10 @@ export default async function AlbumDetailPage({
     return (
         <main className="container mx-auto px-4 py-12">
             <section>
-                <h1>{albums[0]?.name}</h1>
+                <h1>{album?.name}</h1>
                 <time className="text-neutral-700 text-xs">
-                    {albums[0]?.release_date
-                        ? new Date(
-                              Number(albums[0].release_date)
-                          ).toDateString()
+                    {album?.release_date
+                        ? new Date(Number(album.release_date)).toDateString()
                         : ""}
                 </time>
             </section>
