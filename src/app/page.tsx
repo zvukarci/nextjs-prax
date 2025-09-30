@@ -1,12 +1,9 @@
 import Image from "next/image";
-import SQLite from "better-sqlite3";
-import { Kysely, SqliteDialect } from "kysely";
-import { DB } from "@/lib/db-types";
 import Link from "next/link";
+import { getDb } from "@/lib/db";
 
 export default async function Home() {
-    const dialect = new SqliteDialect({ database: new SQLite("db.sqlite") });
-    const db = new Kysely<DB>({ dialect });
+    const db = getDb();
 
     const albums = await db
         .selectFrom("albums")
