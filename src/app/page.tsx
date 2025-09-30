@@ -2,6 +2,7 @@ import Image from "next/image";
 import SQLite from "better-sqlite3";
 import { Kysely, SqliteDialect } from "kysely";
 import { DB } from "@/lib/db-types";
+import Link from "next/link";
 
 export default async function Home() {
     const dialect = new SqliteDialect({ database: new SQLite("db.sqlite") });
@@ -18,8 +19,6 @@ export default async function Home() {
         ])
         .execute();
 
-    console.log(albums[0]);
-
     return (
         <main className="bg-black min-h-screen p-8">
             <div className="max-w-7xl mx-auto">
@@ -29,7 +28,6 @@ export default async function Home() {
                         width={40}
                         height={40}
                         alt="Logo"
-                        className="hover:scale-110 transition-transform"
                     />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -47,6 +45,14 @@ export default async function Home() {
                             <span className="text-sm text-white/50 font-semibold">
                                 {new Date(album.release_date).toDateString()}
                             </span>
+                            <div className="mt-6">
+                                <Link
+                                    className="btn btn-primary btn-block"
+                                    href={`/album/${album.id}`}
+                                >
+                                    Details
+                                </Link>
+                            </div>
                         </div>
                     ))}
                 </div>
