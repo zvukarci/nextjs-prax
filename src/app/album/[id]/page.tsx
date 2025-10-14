@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import Link from "next/link";
 
 export default async function AlbumDetailPage({
     params,
@@ -12,6 +13,7 @@ export default async function AlbumDetailPage({
         .selectFrom("albums")
         .innerJoin("authors", "authors.id", "albums.author_id")
         .select([
+            "authors.id",
             "albums.name",
             "albums.release_date",
             "authors.name as author_name",
@@ -29,6 +31,7 @@ export default async function AlbumDetailPage({
         <main className="container mx-auto px-4 py-12">
             <section>
                 <h1>{album?.name}</h1>
+                <Link href={`/author/${album?.id}`}>{album?.author_name}</Link>
                 <time className="text-neutral-700 text-xs">
                     {album?.release_date
                         ? new Date(Number(album.release_date)).toDateString()
@@ -40,7 +43,7 @@ export default async function AlbumDetailPage({
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>Title</th>
                             <th>Duration</th>
                         </tr>
                     </thead>
