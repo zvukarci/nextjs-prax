@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { getDb } from "@/lib/db";
 
@@ -17,16 +16,8 @@ export default async function Home() {
         .execute();
 
     return (
-        <main className="bg-black min-h-screen p-8">
+        <main className="bg-[#121212] min-h-screen p-8">
             <div className="max-w-7xl mx-auto">
-                <div className="flex justify-center mb-12">
-                    <Image
-                        src="/spotify.png"
-                        width={40}
-                        height={40}
-                        alt="Logo"
-                    />
-                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {albums.map((album) => (
                         <div
