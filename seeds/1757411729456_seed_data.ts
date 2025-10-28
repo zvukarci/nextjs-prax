@@ -6,6 +6,8 @@ export async function seed(db: Kysely<DB>): Promise<void> {
     await db.deleteFrom("songs").execute();
     await db.deleteFrom("albums").execute();
     await db.deleteFrom("authors").execute();
+    await db.deleteFrom("playlists_songs").execute();
+    await db.deleteFrom("playlists").execute();
 
     for (let i = 0; i < 20; i += 1) {
         const numBioParagraphs = faker.number.int({ min: 0, max: 5 });
@@ -69,4 +71,35 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                 .execute();
         }
     }
+
+    const songs = await db.selectFrom("songs").selectAll().execute();
+    const numPlaylists = 5;
+
+    for (let i = 0; i < numPlaylists; i += 1) {
+        const playlistName = faker.music.genre() + " Playlist";
+
+        const playlistResult = await db
+            .insertInto("playlists")
+            .values({ name: playlistName })
+            .returning("id")
+            .executeTakeFirst();
+
+        const playlistId = playlistResult!.id;
+
+        const shuffledSongs = faker.helpers.shuffle(songs);
+        const numSongsInPlaylist = faker.number.int({ min: 5, max: 15 });
+        const songsForPlaylist = shuffledSongs.slice(0, numSongsInPlaylist);
+
+        for (const song of songsForPlaylist) {
+            await db
+                .insertInto("playlists_songs")
+                .values({
+                    playlist_id: playlistId,
+                    song_id: song.id,
+                })
+                .execute();
+        }
+    }
+
+    console.log("Seed hotový: autori, albumy, pesničky a playlisty");
 }
