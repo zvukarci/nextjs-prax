@@ -58,8 +58,6 @@ export async function seed(db: Kysely<DB>): Promise<void> {
             numSongs = faker.number.int({ min: 10, max: 20 });
         }
 
-        console.log(album.name, numSongs);
-
         for (let i = 0; i < numSongs; i += 1) {
             await db
                 .insertInto("songs")
@@ -100,6 +98,4 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                 .execute();
         }
     }
-
-    console.log("Seed hotový: autori, albumy, pesničky a playlisty");
 }
