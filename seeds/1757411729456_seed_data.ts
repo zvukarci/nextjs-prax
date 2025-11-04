@@ -31,7 +31,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
     for (const author of authors) {
         const numAlbums = faker.number.int({ min: 0, max: 10 });
 
-        for (let i = 0; i < numAlbums; i += 1) {
+        for (let i = 0; i < numAlbums; i++) {
             await db
                 .insertInto("albums")
                 .values({
@@ -58,7 +58,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
             numSongs = faker.number.int({ min: 10, max: 20 });
         }
 
-        for (let i = 0; i < numSongs; i += 1) {
+        for (let i = 0; i < numSongs; i++) {
             await db
                 .insertInto("songs")
                 .values({
@@ -71,31 +71,56 @@ export async function seed(db: Kysely<DB>): Promise<void> {
     }
 
     const songs = await db.selectFrom("songs").selectAll().execute();
-    const numPlaylists = 5;
 
-    for (let i = 0; i < numPlaylists; i += 1) {
-        const playlistName = faker.music.genre() + " Playlist";
+    await db
+        .insertInto("users")
+        .values({
+            id: 1,
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+            name: faker.person.firstName(),
+        })
+        .execute();
 
-        const playlistResult = await db
-            .insertInto("playlists")
-            .values({ name: playlistName })
-            .returning("id")
-            .executeTakeFirst();
+    for (let i = 0; i < 10; i++) {
+        await db
+            .insertInto("users")
+            .values({
+                email: faker.internet.email(),
+                password: faker.internet.password(),
+                name: faker.person.firstName(),
+            })
+            .execute();
+    }
 
-        const playlistId = playlistResult!.id;
+    const users = await db.selectFrom("users").selectAll().execute();
 
-        const shuffledSongs = faker.helpers.shuffle(songs);
-        const numSongsInPlaylist = faker.number.int({ min: 5, max: 15 });
-        const songsForPlaylist = shuffledSongs.slice(0, numSongsInPlaylist);
+    for (const user of users) {
+        const numPlaylists = faker.number.int({ min: 1, max: 10 });
 
-        for (const song of songsForPlaylist) {
-            await db
-                .insertInto("playlists_songs")
-                .values({
-                    playlist_id: playlistId,
-                    song_id: song.id,
-                })
-                .execute();
+        for (let i = 0; i < numPlaylists; i++) {
+            const playlistName = faker.music.genre() + " Playlist";
+            const playlistResult = await db
+                .insertInto("playlists")
+                .values({ name: playlistName, user_id: user.id })
+                .returning("id")
+                .executeTakeFirst();
+
+            const playlistId = playlistResult!.id;
+
+            const shuffledSongs = faker.helpers.shuffle(songs);
+            const numSongsInPlaylist = faker.number.int({ min: 5, max: 15 });
+            const songsForPlaylist = shuffledSongs.slice(0, numSongsInPlaylist);
+
+            for (const song of songsForPlaylist) {
+                await db
+                    .insertInto("playlists_songs")
+                    .values({
+                        playlist_id: playlistId,
+                        song_id: song.id,
+                    })
+                    .execute();
+            }
         }
     }
 }

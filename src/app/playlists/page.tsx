@@ -7,6 +7,7 @@ export default async function Playlists() {
     const playlists = await db
         .selectFrom("playlists")
         .select(["playlists.id", "playlists.name"])
+        .where("user_id", "=", 1)
         .execute();
 
     return (
