@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
+import { DeletePlaylistButton } from "./DeletePlaylistButton";
 
 export default async function Playlists() {
     const db = getDb();
@@ -29,6 +30,11 @@ export default async function Playlists() {
                                 >
                                     Details
                                 </Link>
+                            </div>
+                            <div className="mt-2">
+                                <DeletePlaylistButton
+                                    playlistId={playlist.id}
+                                />
                             </div>
                         </div>
                     ))}

@@ -1,4 +1,6 @@
 import { getDb } from "@/lib/db";
+import { RemovePlaylistSongButton } from "./RemovePlaylistSongButton";
+import { DeletePlaylistButton } from "@/app/playlists/DeletePlaylistButton";
 
 export default async function PlaylistDetailPage({
     params,
@@ -30,6 +32,7 @@ export default async function PlaylistDetailPage({
         <main className="container mx-auto px-4 py-12">
             <section>
                 <h1>{playlist?.name}</h1>
+                <DeletePlaylistButton playlistId={Number(id)} />
             </section>
             <section className="overflow-x-auto">
                 <table className="table ">
@@ -38,6 +41,7 @@ export default async function PlaylistDetailPage({
                             <th>#</th>
                             <th>Title</th>
                             <th>Duration</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,6 +59,12 @@ export default async function PlaylistDetailPage({
                                             .toString()
                                             .padStart(2, "0")}
                                     </time>
+                                </td>
+                                <td>
+                                    <RemovePlaylistSongButton
+                                        playlistId={Number(id)}
+                                        songId={song.song_id}
+                                    />
                                 </td>
                             </tr>
                         ))}
