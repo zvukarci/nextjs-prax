@@ -28,3 +28,12 @@ export async function deletePlaylist(playlistId: number) {
 
     redirect("/playlists");
 }
+
+export async function addSong(playlistId: number, songId: number) {
+    await db
+        .insertInto("playlists_songs")
+        .values({ playlist_id: playlistId, song_id: songId })
+        .execute();
+
+    revalidatePath(`/playlist/${playlistId}`);
+}

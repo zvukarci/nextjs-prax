@@ -1,5 +1,6 @@
 import { getDb } from "@/lib/db";
 import Link from "next/link";
+import { AddSongToPlaylist } from "./AddSongToPlaylist";
 
 export default async function AlbumDetailPage({
     params,
@@ -27,6 +28,12 @@ export default async function AlbumDetailPage({
         .where("album_id", "=", Number(id))
         .execute();
 
+    const playlists = await db
+        .selectFrom("playlists")
+        .select(["playlists.id", "playlists.name"])
+        .where("playlists.user_id", "=", 1)
+        .execute();
+
     return (
         <main className="container mx-auto px-4 py-12">
             <section>
@@ -45,6 +52,7 @@ export default async function AlbumDetailPage({
                             <th>#</th>
                             <th>Title</th>
                             <th>Duration</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,6 +70,12 @@ export default async function AlbumDetailPage({
                                             .toString()
                                             .padStart(2, "0")}
                                     </time>
+                                </td>
+                                <td>
+                                    <AddSongToPlaylist
+                                        playlists={playlists}
+                                        songId={song.id}
+                                    />
                                 </td>
                             </tr>
                         ))}
