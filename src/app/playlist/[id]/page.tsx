@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { RemovePlaylistSongButton } from "./RemovePlaylistSongButton";
 import { DeletePlaylistButton } from "@/app/playlists/DeletePlaylistButton";
+import Link from "next/link";
 
 export default async function PlaylistDetailPage({
     params,
@@ -8,13 +9,23 @@ export default async function PlaylistDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
+    const playlistId = Number(id);
+
+    if (isNaN(playlistId)) {
+        return <div>Invalid Playlist id</div>;
+    }
+
     const db = getDb();
 
     const playlist = await db
         .selectFrom("playlists")
         .select(["playlists.name"])
-        .where("id", "=", Number(id))
+        .where("id", "=", playlistId)
         .executeTakeFirst();
+
+    if (playlist == null) {
+        return <div>Playlist not found</div>;
+    }
 
     const songs = await db
         .selectFrom("playlists_songs")
@@ -25,14 +36,20 @@ export default async function PlaylistDetailPage({
             "songs.name",
             "songs.duration",
         ])
-        .where("playlists_songs.playlist_id", "=", Number(id))
+        .where("playlists_songs.playlist_id", "=", playlistId)
         .execute();
 
     return (
         <main className="container mx-auto px-4 py-12">
             <section>
                 <h1>{playlist?.name}</h1>
-                <DeletePlaylistButton playlistId={Number(id)} />
+                <Link
+                    href={`/playlist/${playlistId}/edit`}
+                    className="btn btn-xs"
+                >
+                    Edit
+                </Link>
+                <DeletePlaylistButton playlistId={playlistId} />
             </section>
             <section className="overflow-x-auto">
                 <table className="table ">
@@ -62,7 +79,7 @@ export default async function PlaylistDetailPage({
                                 </td>
                                 <td>
                                     <RemovePlaylistSongButton
-                                        playlistId={Number(id)}
+                                        playlistId={playlistId}
                                         songId={song.song_id}
                                     />
                                 </td>

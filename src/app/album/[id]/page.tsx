@@ -8,6 +8,8 @@ export default async function AlbumDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
+    const albumId = Number(id);
+
     const db = getDb();
 
     const album = await db
@@ -19,13 +21,13 @@ export default async function AlbumDetailPage({
             "albums.release_date",
             "authors.name as author_name",
         ])
-        .where("albums.id", "=", Number(id))
+        .where("albums.id", "=", albumId)
         .executeTakeFirst();
 
     const songs = await db
         .selectFrom("songs")
         .select(["songs.id", "songs.name", "songs.duration"])
-        .where("album_id", "=", Number(id))
+        .where("album_id", "=", albumId)
         .execute();
 
     const playlists = await db

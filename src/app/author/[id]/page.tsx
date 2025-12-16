@@ -7,18 +7,20 @@ export default async function AuthorDetailPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
+    const authorId = Number(id);
+
     const db = getDb();
 
     const author = await db
         .selectFrom("authors")
         .select(["authors.name", "authors.bio"])
-        .where("id", "=", Number(id))
+        .where("id", "=", authorId)
         .executeTakeFirst();
 
     const albums = await db
         .selectFrom("albums")
         .select(["albums.id", "albums.name", "albums.release_date"])
-        .where("author_id", "=", Number(id))
+        .where("author_id", "=", authorId)
         .execute();
 
     return (
