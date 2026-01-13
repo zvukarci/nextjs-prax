@@ -1,7 +1,7 @@
 import { getDb } from "@/lib/db";
 import { RemovePlaylistSongButton } from "./RemovePlaylistSongButton";
 import { DeletePlaylistButton } from "@/app/playlists/DeletePlaylistButton";
-import Link from "next/link";
+import { UpdatePlaylistButton } from "./UpdatePlaylistButton";
 
 export default async function PlaylistDetailPage({
     params,
@@ -43,12 +43,10 @@ export default async function PlaylistDetailPage({
         <main className="container mx-auto px-4 py-12">
             <section>
                 <h1>{playlist?.name}</h1>
-                <Link
-                    href={`/playlist/${playlistId}/edit`}
-                    className="btn btn-xs"
-                >
-                    Edit
-                </Link>
+                <UpdatePlaylistButton
+                    playlistId={playlistId}
+                    playlistName={playlist.name}
+                />
                 <DeletePlaylistButton playlistId={playlistId} />
             </section>
             <section className="overflow-x-auto">
