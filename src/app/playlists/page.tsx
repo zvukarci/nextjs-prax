@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
-import { DeletePlaylistButton } from "./DeletePlaylistButton";
-import { CreatePlaylistButton } from "./CreatePlaylistButton";
+import { DeletePlaylistButton } from "@/app/components/DeletePlaylistButton";
+import { CreatePlaylistButton } from "@/app/components/CreatePlaylistButton";
 
 export default async function Playlists() {
     const db = getDb();

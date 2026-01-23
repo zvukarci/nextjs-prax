@@ -1,7 +1,8 @@
 import { getDb } from "@/lib/db";
-import { RemovePlaylistSongButton } from "./RemovePlaylistSongButton";
-import { DeletePlaylistButton } from "@/app/playlists/DeletePlaylistButton";
-import { UpdatePlaylistButton } from "./UpdatePlaylistButton";
+import { RemovePlaylistSongButton } from "@/app/components/RemovePlaylistSongButton";
+import { DeletePlaylistButton } from "@/app/components/DeletePlaylistButton";
+import { UpdatePlaylistButton } from "@/app/components/UpdatePlaylistButton";
+import { AddLikeButton } from "@/app/components/AddLikeButton";
 
 export default async function PlaylistDetailPage({
     params,
@@ -78,6 +79,9 @@ export default async function PlaylistDetailPage({
                                 <td>
                                     <RemovePlaylistSongButton
                                         playlistId={playlistId}
+                                        songId={song.song_id}
+                                    />
+                                    <AddLikeButton
                                         songId={song.song_id}
                                     />
                                 </td>

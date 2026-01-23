@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import Link from "next/link";
-import { AddSongToPlaylist } from "./AddSongToPlaylist";
+import { AddSongToPlaylist } from "@/app/components/AddSongToPlaylist";
+import { AddLikeButton } from "@/app/components/AddLikeButton";
 
 export default async function AlbumDetailPage({
     params,
@@ -76,6 +77,9 @@ export default async function AlbumDetailPage({
                                 <td>
                                     <AddSongToPlaylist
                                         playlists={playlists}
+                                        songId={song.id}
+                                    />
+                                    <AddLikeButton
                                         songId={song.id}
                                     />
                                 </td>
