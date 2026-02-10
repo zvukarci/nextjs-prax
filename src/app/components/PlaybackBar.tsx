@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AddLikeButton } from "./AddLikeButton";
 import { AddSongToPlaylist } from "./AddSongToPlaylist";
+import { addPlaybackEvent } from "@/actions/playback";
 
 interface Song {
     id: number;
@@ -65,23 +66,30 @@ export function PlaybackBar(props: { songs: Song[]; playlists: Playlist[] }) {
         }
     }
 
-    function playNextSong() {
+    function playNextSong(isSkip: boolean) {
+        const currentSongId = currentSong?.id || 0;
+        let nextSong: Song;
+
         if (shuffle) {
             const randomIndex = Math.floor(Math.random() * queue.length);
-            setCurrentSong(queue[randomIndex]);
-            setProgress(0);
-            setPlaybackStart({
-                timestamp: Date.now(),
-                progressAtStart: 0,
-            });
-            setIsPlaying(true);
-            return;
+            nextSong = queue[randomIndex];
+        } else {
+            const currentIndex = queue.findIndex(
+                (song) => song.id === currentSong?.id,
+            );
+            const nextIndex = (currentIndex + 1) % queue.length;
+            nextSong = queue[nextIndex];
         }
-        const currentIndex = queue.findIndex(
-            (song) => song.id === currentSong?.id,
-        );
-        const nextIndex = (currentIndex + 1) % queue.length;
-        setCurrentSong(queue[nextIndex]);
+
+        if (isSkip) {
+            addPlaybackEvent(currentSongId, "playback_skip");
+        } else {
+            addPlaybackEvent(currentSongId, "playback_end");
+        }
+
+        addPlaybackEvent(nextSong.id, "playback_start");
+
+        setCurrentSong(nextSong);
         setProgress(0);
         setPlaybackStart({
             timestamp: Date.now(),
@@ -98,7 +106,7 @@ export function PlaybackBar(props: { songs: Song[]; playlists: Playlist[] }) {
             const newProgress = playbackStart.progressAtStart + elapsed;
 
             if (newProgress >= currentSong.duration) {
-                playNextSong();
+                playNextSong(false);
             } else {
                 setProgress(newProgress);
             }
@@ -210,7 +218,7 @@ export function PlaybackBar(props: { songs: Song[]; playlists: Playlist[] }) {
 
                     <button
                         className="btn btn-circle btn-sm btn-ghost"
-                        onClick={playNextSong}
+                        onClick={() => playNextSong(true)}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
