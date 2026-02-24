@@ -24,7 +24,11 @@ function formatDuration(duration: number): string {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export function PlaybackBar(props: { songs: Song[]; playlists: Playlist[] }) {
+export function PlaybackBar(props: {
+    userId: number;
+    songs: Song[];
+    playlists: Playlist[];
+}) {
     const [queue, setQueue] = useState<Song[]>(props.songs);
     const [currentSong, setCurrentSong] = useState<Song | null>(queue[0]);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -142,7 +146,7 @@ export function PlaybackBar(props: { songs: Song[]; playlists: Playlist[] }) {
                         songId={id}
                     />
                 </div>
-                <AddLikeButton songId={id} />
+                <AddLikeButton userId={props.userId} songId={id} />
             </div>
 
             <div className="flex flex-col items-center gap-1 flex-1 max-w-xl">

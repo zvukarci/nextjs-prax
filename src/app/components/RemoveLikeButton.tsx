@@ -2,14 +2,12 @@
 
 import { removeLikeSong } from "@/actions/likesong";
 
-export function RemoveLikeButton(props: {
-    songId: number;
-}) {
+export function RemoveLikeButton(props: { userId: number; songId: number }) {
     return (
         <button
             className="btn btn-xs"
             onClick={() => {
-                removeLikeSong(props.songId);
+                removeLikeSong(props.userId, props.songId);
             }}
         >
             Unlike

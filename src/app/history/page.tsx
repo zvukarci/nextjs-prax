@@ -1,7 +1,9 @@
 import { getDb } from "@/lib/db";
+import { getUser } from "@/lib/user";
 
-export default async function LikedSongs() {
+export default async function History() {
     const db = getDb();
+    const userId = Number(await getUser());
 
     const songs = await db
         .selectFrom("songs")
@@ -13,7 +15,7 @@ export default async function LikedSongs() {
             "playback_events.event_name",
             "playback_events.timestamp",
         ])
-        .where("user_id", "=", 1)
+        .where("user_id", "=", userId)
         .where("playback_events.event_name", "=", "playback_end")
         .execute();
 

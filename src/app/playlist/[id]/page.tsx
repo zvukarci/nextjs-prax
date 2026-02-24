@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { getUser } from "@/lib/user";
 import { RemovePlaylistSongButton } from "@/app/components/RemovePlaylistSongButton";
 import { DeletePlaylistButton } from "@/app/components/DeletePlaylistButton";
 import { UpdatePlaylistButton } from "@/app/components/UpdatePlaylistButton";
@@ -17,6 +18,7 @@ export default async function PlaylistDetailPage({
     }
 
     const db = getDb();
+    const userId = Number(await getUser());
 
     const playlist = await db
         .selectFrom("playlists")
@@ -82,6 +84,7 @@ export default async function PlaylistDetailPage({
                                         songId={song.song_id}
                                     />
                                     <AddLikeButton
+                                        userId={userId}
                                         songId={song.song_id}
                                     />
                                 </td>

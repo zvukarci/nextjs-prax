@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "./components/Navbar";
 import { PlaybackBar } from "./components/PlaybackBar";
 import { getDb } from "@/lib/db";
+import { getUser } from "@/lib/user";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export default async function RootLayout({
     children: React.ReactNode;
 }>) {
     const db = getDb();
+    const userId = Number(await getUser());
 
     const randomSongs = await db
         .selectFrom("songs")
@@ -43,7 +45,7 @@ export default async function RootLayout({
     const playlists = await db
         .selectFrom("playlists")
         .select(["playlists.id", "playlists.name"])
-        .where("playlists.user_id", "=", 1)
+        .where("playlists.user_id", "=", userId)
         .execute();
 
     return (
@@ -54,7 +56,11 @@ export default async function RootLayout({
                 <Navbar />
                 {children}
                 <div className="fixed h-24 bg-base-100 bottom-0 left-0 right-0 border-t border-base-300">
-                    <PlaybackBar songs={randomSongs} playlists={playlists} />
+                    <PlaybackBar
+                        userId={userId}
+                        songs={randomSongs}
+                        playlists={playlists}
+                    />
                 </div>
             </body>
         </html>

@@ -1,15 +1,17 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
+import { getUser } from "@/lib/user";
 import { DeletePlaylistButton } from "@/app/components/DeletePlaylistButton";
 import { CreatePlaylistButton } from "@/app/components/CreatePlaylistButton";
 
 export default async function Playlists() {
     const db = getDb();
+    const userId = Number(await getUser());
 
     const playlists = await db
         .selectFrom("playlists")
         .select(["playlists.id", "playlists.name"])
-        .where("user_id", "=", 1)
+        .where("user_id", "=", userId)
         .execute();
 
     return (

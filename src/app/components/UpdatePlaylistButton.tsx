@@ -13,7 +13,7 @@ export function UpdatePlaylistButton(props: {
                 onClick={() =>
                     (
                         document.getElementById(
-                            "my_modal_2"
+                            "my_modal_2",
                         ) as HTMLDialogElement | null
                     )?.showModal()
                 }

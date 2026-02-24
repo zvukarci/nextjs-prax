@@ -1,4 +1,5 @@
 import { getDb } from "@/lib/db";
+import { getUser } from "@/lib/user";
 import Link from "next/link";
 import { AddSongToPlaylist } from "@/app/components/AddSongToPlaylist";
 import { AddLikeButton } from "@/app/components/AddLikeButton";
@@ -12,6 +13,7 @@ export default async function AlbumDetailPage({
     const albumId = Number(id);
 
     const db = getDb();
+    const userId = Number(await getUser());
 
     const album = await db
         .selectFrom("albums")
@@ -80,6 +82,7 @@ export default async function AlbumDetailPage({
                                         songId={song.id}
                                     />
                                     <AddLikeButton
+                                        userId={userId}
                                         songId={song.id}
                                     />
                                 </td>
