@@ -15,8 +15,8 @@ export default async function History() {
             "playback_events.event_name",
             "playback_events.timestamp",
         ])
-        .where("user_id", "=", userId)
         .where("playback_events.event_name", "=", "playback_end")
+        .where("user_id", "=", userId)
         .execute();
 
     return (

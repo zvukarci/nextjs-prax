@@ -48,7 +48,10 @@ export default function Login() {
                         />
                     </section>
 
-                    <button type="submit" className="btn">
+                    <button
+                        type="submit"
+                        className="btn w-full bg-green-500 hover:bg-green-600 text-[#121212] font-bold rounded-3xl transition-colors"
+                    >
                         Log In
                     </button>
                 </form>
