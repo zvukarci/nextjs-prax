@@ -8,6 +8,7 @@ export interface Song {
 }
 
 interface PlaybackContextState {
+    queue: Song[];
     isPlaying: boolean;
     progress: number;
     isShuffled: boolean;
@@ -20,6 +21,7 @@ interface PlaybackContextState {
 }
 
 export const PlaybackContext = createContext<PlaybackContextState>({
+    queue: [],
     isPlaying: false,
     progress: 0,
     isShuffled: false,

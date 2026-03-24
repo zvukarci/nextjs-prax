@@ -174,9 +174,16 @@ export function PlaybackContextProvider({
         };
     }, [isPlaying, currentSong, playbackStart, handleNext]);
 
+    const suffledQueue = playbackStatus.shuffleOrder.map((i) => queue[i]);
+
+    const contextQueue = isShuffled
+        ? suffledQueue.slice(playbackStatus.shufflePosition + 1)
+        : queue.slice(playbackStatus.currentSongIndex + 1);
+
     return (
         <PlaybackContext
             value={{
+                queue: contextQueue,
                 isPlaying: isPlaying,
                 progress: progress,
                 isShuffled: isShuffled,
