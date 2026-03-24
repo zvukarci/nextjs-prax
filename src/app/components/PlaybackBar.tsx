@@ -1,21 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { AddLikeButton } from "./AddLikeButton";
 import { AddSongToPlaylist } from "./AddSongToPlaylist";
-import { addPlaybackEvent } from "@/actions/playback";
-
-interface Song {
-    id: number;
-    name: string;
-    author: string;
-    duration: number;
-}
-
-interface Playlist {
-    id: number;
-    name: string;
-}
+import { PlaybackContext, Song } from "../playback-context";
 
 function formatDuration(duration: number): string {
     const minutes = Math.floor(duration / 60);
@@ -27,103 +15,24 @@ function formatDuration(duration: number): string {
 export function PlaybackBar(props: {
     userId: number;
     songs: Song[];
-    playlists: Playlist[];
+    playlists: { id: number; name: string }[];
 }) {
-    const [queue, setQueue] = useState<Song[]>(props.songs);
-    const [currentSong, setCurrentSong] = useState<Song | null>(queue[0]);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [progress, setProgress] = useState(87);
-    const [shuffle, setShuffle] = useState(false);
-    const [playbackStart, setPlaybackStart] = useState<{
-        timestamp: number;
-        progressAtStart: number;
-    } | null>(null);
+    const {
+        isPlaying,
+        progress,
+        isShuffled,
+        currentSong,
+        togglePlayback,
+        seekTo,
+        handleNext,
+        handleBack,
+        toggleShuffle,
+    } = useContext(PlaybackContext);
 
-    function startPlayback() {
-        setPlaybackStart({
-            timestamp: Date.now(),
-            progressAtStart: progress,
-        });
-        setIsPlaying(true);
-    }
-
-    function pausePlayback() {
-        setIsPlaying(false);
-        setPlaybackStart(null);
-    }
-
-    function seekTo(newProgress: number) {
-        setProgress(newProgress);
-        if (isPlaying) {
-            setPlaybackStart({
-                timestamp: Date.now(),
-                progressAtStart: newProgress,
-            });
-        }
-    }
-
-    function togglePlayback() {
-        if (isPlaying) {
-            pausePlayback();
-        } else {
-            startPlayback();
-        }
-    }
-
-    function playNextSong(isSkip: boolean) {
-        const currentSongId = currentSong?.id || 0;
-        let nextSong: Song;
-
-        if (shuffle) {
-            const randomIndex = Math.floor(Math.random() * queue.length);
-            nextSong = queue[randomIndex];
-        } else {
-            const currentIndex = queue.findIndex(
-                (song) => song.id === currentSong?.id,
-            );
-            const nextIndex = (currentIndex + 1) % queue.length;
-            nextSong = queue[nextIndex];
-        }
-
-        if (isSkip) {
-            addPlaybackEvent(currentSongId, "playback_skip");
-        } else {
-            addPlaybackEvent(currentSongId, "playback_end");
-        }
-
-        addPlaybackEvent(nextSong.id, "playback_start");
-
-        setCurrentSong(nextSong);
-        setProgress(0);
-        setPlaybackStart({
-            timestamp: Date.now(),
-            progressAtStart: 0,
-        });
-        setIsPlaying(true);
-    }
-
-    useEffect(() => {
-        if (!isPlaying || currentSong == null || playbackStart == null) return;
-
-        const interval = setInterval(() => {
-            const elapsed = (Date.now() - playbackStart.timestamp) / 1000;
-            const newProgress = playbackStart.progressAtStart + elapsed;
-
-            if (newProgress >= currentSong.duration) {
-                playNextSong(false);
-            } else {
-                setProgress(newProgress);
-            }
-        }, 100);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, [isPlaying, currentSong, playbackStart]);
-
-    const id = currentSong?.id || 0;
     const duration = currentSong?.duration || 0;
-    const remaining = duration - progress;
+    const currentProgress = Math.floor(progress);
+    const currentRemaining = duration - currentProgress;
+    const currentSongId = currentSong?.id;
 
     return (
         <div className="flex items-center justify-between h-full pl-16 pr-4">
@@ -140,22 +49,29 @@ export function PlaybackBar(props: {
                 ) : (
                     <div className="text-sm text-gray-500">No song playing</div>
                 )}
-                <div className="dropdown-top">
-                    <AddSongToPlaylist
-                        playlists={props.playlists}
-                        songId={id}
-                    />
-                </div>
-                <AddLikeButton userId={props.userId} songId={id} />
+                {currentSongId != null && (
+                    <>
+                        <div className="dropdown-top">
+                            <AddSongToPlaylist
+                                playlists={props.playlists}
+                                songId={currentSongId}
+                            />
+                        </div>
+                        <AddLikeButton
+                            userId={props.userId}
+                            songId={currentSongId}
+                        />
+                    </>
+                )}
             </div>
 
             <div className="flex flex-col items-center gap-1 flex-1 max-w-xl">
                 <div className="flex items-center gap-2">
                     <button
                         className={`btn btn-circle btn-sm btn-ghost hover:bg-green-600 ${
-                            shuffle ? "bg-green-600" : ""
+                            isShuffled ? "bg-green-600" : ""
                         }`}
-                        onClick={() => setShuffle(!shuffle)}
+                        onClick={toggleShuffle}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +91,7 @@ export function PlaybackBar(props: {
                     </button>
                     <button
                         className="btn btn-circle btn-sm btn-ghost"
-                        onClick={() => seekTo(0)}
+                        onClick={handleBack}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -222,7 +138,7 @@ export function PlaybackBar(props: {
 
                     <button
                         className="btn btn-circle btn-sm btn-ghost"
-                        onClick={() => playNextSong(true)}
+                        onClick={handleNext}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -237,18 +153,18 @@ export function PlaybackBar(props: {
 
                 <div className="flex items-center gap-2 w-full">
                     <span className="text-xs text-gray-500 w-10 text-right">
-                        {formatDuration(progress)}
+                        {formatDuration(currentProgress)}
                     </span>
                     <input
                         type="range"
                         min={0}
                         max={duration}
-                        value={progress}
+                        value={currentProgress}
                         onChange={(e) => seekTo(Number(e.target.value))}
                         className="range range-xs flex-1 cursor-pointer"
                     />
                     <span className="text-xs text-gray-500 w-10">
-                        -{formatDuration(remaining)}
+                        -{formatDuration(Math.max(0, currentRemaining))}
                     </span>
                 </div>
             </div>
