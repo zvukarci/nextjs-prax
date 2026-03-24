@@ -2,7 +2,7 @@ import { login } from "@/actions/auth";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Login() {
+export default function LoginPage() {
     return (
         <main className="min-h-screen bg-[#121212] flex flex-col items-center">
             <header className="pt-8 pb-6">

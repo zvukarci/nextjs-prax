@@ -1,7 +1,7 @@
 import { getDb } from "@/lib/db";
 import { getUser } from "@/lib/user";
 
-export default async function History() {
+export default async function HistoryPage() {
     const db = getDb();
     const userId = Number(await getUser());
 

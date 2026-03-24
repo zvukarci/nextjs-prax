@@ -2,7 +2,7 @@ import { getDb } from "@/lib/db";
 import { getUser } from "@/lib/user";
 import { RemoveLikeButton } from "@/app/components/RemoveLikeButton";
 
-export default async function LikedSongs() {
+export default async function LikedSongsPage() {
     const db = getDb();
     const userId = Number(await getUser());
 

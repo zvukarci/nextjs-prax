@@ -4,7 +4,7 @@ import { getUser } from "@/lib/user";
 import { DeletePlaylistButton } from "@/app/components/DeletePlaylistButton";
 import { CreatePlaylistButton } from "@/app/components/CreatePlaylistButton";
 
-export default async function Playlists() {
+export default async function PlaylistsPage() {
     const db = getDb();
     const userId = Number(await getUser());
 
