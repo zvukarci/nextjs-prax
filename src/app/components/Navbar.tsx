@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
-const Navbar = () => {
+const NavBar = () => {
     const [searchInput, setSearchInput] = useState("");
 
     const searchQuery = searchInput !== " " ? { q: searchInput } : {};
@@ -35,4 +35,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default NavBar;

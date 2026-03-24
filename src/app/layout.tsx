@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
+import NavBar from "./components/NavBar";
 import { PlaybackBar } from "./components/PlaybackBar";
 import { getDb } from "@/lib/db";
 import { getUser } from "@/lib/user";
 import { PlaybackContextProvider } from "./components/PlaybackContextProvider";
+import { SideBar } from "./components/SideBar";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -54,9 +55,11 @@ export default async function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                <PlaybackContextProvider initialSongs={randomSongs}>
-                    <Navbar />
+                <PlaybackContextProvider randomSongs={randomSongs}>
+                    <NavBar />
+                    <SideBar />
                     {children}
+                    Side
                     <div className="fixed h-24 bg-base-100 bottom-0 left-0 right-0 border-t border-base-300">
                         <PlaybackBar
                             userId={userId}
