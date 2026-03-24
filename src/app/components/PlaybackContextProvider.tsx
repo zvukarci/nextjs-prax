@@ -121,13 +121,13 @@ function handleBackPlaybackStatus(prev: PlaybackStatus): PlaybackStatus {
 
 export function PlaybackContextProvider({
     children,
-    initialSongs,
+    randomSongs,
 }: Readonly<{
     children: React.ReactNode;
-    initialSongs: Song[];
+    randomSongs: Song[];
 }>) {
     const [playbackStatus, setPlaybackStatus] = useState<PlaybackStatus>({
-        queue: initialSongs,
+        queue: randomSongs,
         currentSongIndex: 0,
         isPlaying: false,
         progress: 0,
