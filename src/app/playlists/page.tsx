@@ -6,7 +6,7 @@ import { CreatePlaylistButton } from "@/app/components/CreatePlaylistButton";
 
 export default async function PlaylistsPage() {
     const db = getDb();
-    const userId = Number(await getUser());
+    const userId = await getUser();
 
     const playlists = await db
         .selectFrom("playlists")

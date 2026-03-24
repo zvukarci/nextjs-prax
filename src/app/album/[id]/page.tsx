@@ -13,7 +13,7 @@ export default async function AlbumDetailPage({
     const albumId = Number(id);
 
     const db = getDb();
-    const userId = Number(await getUser());
+    const userId = await getUser();
 
     const album = await db
         .selectFrom("albums")
@@ -36,7 +36,7 @@ export default async function AlbumDetailPage({
     const playlists = await db
         .selectFrom("playlists")
         .select(["playlists.id", "playlists.name"])
-        .where("playlists.user_id", "=", 1)
+        .where("playlists.user_id", "=", userId)
         .execute();
 
     return (

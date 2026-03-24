@@ -4,7 +4,7 @@ import { RemoveLikeButton } from "@/app/components/RemoveLikeButton";
 
 export default async function LikedSongsPage() {
     const db = getDb();
-    const userId = Number(await getUser());
+    const userId = await getUser();
 
     const songs = await db
         .selectFrom("songs")

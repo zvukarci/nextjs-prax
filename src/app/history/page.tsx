@@ -3,7 +3,7 @@ import { getUser } from "@/lib/user";
 
 export default async function HistoryPage() {
     const db = getDb();
-    const userId = Number(await getUser());
+    const userId = await getUser();
 
     const songs = await db
         .selectFrom("songs")

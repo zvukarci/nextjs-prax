@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 
-export async function getUser() {
+export async function getUser(): Promise<number> {
     const cookieStore = await cookies();
-    return cookieStore.get("sessionToken")?.value ?? "1";
+    const userIdRaw = cookieStore.get("sessionToken")?.value ?? "1";
+    const userId = Number(userIdRaw);
+    return userId;
 }

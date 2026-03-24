@@ -18,7 +18,7 @@ export default async function PlaylistDetailPage({
     }
 
     const db = getDb();
-    const userId = Number(await getUser());
+    const userId = await getUser();
 
     const playlist = await db
         .selectFrom("playlists")
