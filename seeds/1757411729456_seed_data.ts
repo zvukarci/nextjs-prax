@@ -78,9 +78,9 @@ export async function seed(db: Kysely<DB>): Promise<void> {
         .insertInto("users")
         .values({
             id: 1,
-            email: faker.internet.email(),
-            password: faker.internet.password(),
-            name: faker.person.firstName(),
+            name: "Test",
+            email: "test@test.com",
+            password: "test123",
         })
         .execute();
 
