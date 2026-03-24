@@ -9,6 +9,7 @@ interface PlaybackStatus {
     currentSongIndex: number;
     isPlaying: boolean;
     progress: number;
+    isRepeatEnabled: boolean;
     playbackStart: {
         timestamp: number;
         progressAtStart: number;
@@ -37,6 +38,19 @@ function handleNextPlaybackStatus(prev: PlaybackStatus): PlaybackStatus {
     if (prev.isShuffled) {
         const isLast = prev.shufflePosition >= prev.shuffleOrder.length - 1;
         if (isLast) {
+            if (prev.isRepeatEnabled) {
+                return {
+                    ...prev,
+                    shufflePosition: 0,
+                    currentSongIndex: prev.shuffleOrder[0],
+                    progress: 0,
+                    isPlaying: true,
+                    playbackStart: {
+                        timestamp: Date.now(),
+                        progressAtStart: 0,
+                    },
+                };
+            }
             return { ...prev, isPlaying: false, playbackStart: null };
         }
         const newShufflePosition = prev.shufflePosition + 1;
@@ -53,6 +67,15 @@ function handleNextPlaybackStatus(prev: PlaybackStatus): PlaybackStatus {
     const isLastSong = prev.currentSongIndex >= prev.queue.length - 1;
 
     if (isLastSong) {
+        if (prev.isRepeatEnabled && prev.queue.length > 0) {
+            return {
+                ...prev,
+                currentSongIndex: 0,
+                progress: 0,
+                isPlaying: true,
+                playbackStart: { timestamp: Date.now(), progressAtStart: 0 },
+            };
+        }
         return { ...prev, isPlaying: false, playbackStart: null };
     }
 
@@ -131,14 +154,21 @@ export function PlaybackContextProvider({
         currentSongIndex: 0,
         isPlaying: false,
         progress: 0,
+        isRepeatEnabled: false,
         playbackStart: null,
         isShuffled: false,
         shuffleOrder: [],
         shufflePosition: 0,
     });
 
-    const { isPlaying, progress, isShuffled, queue, playbackStart } =
-        playbackStatus;
+    const {
+        isPlaying,
+        progress,
+        isShuffled,
+        isRepeatEnabled,
+        queue,
+        playbackStart,
+    } = playbackStatus;
     const currentSong = queue.at(playbackStatus.currentSongIndex);
 
     const handleNext = useCallback(() => {
@@ -187,6 +217,7 @@ export function PlaybackContextProvider({
                 isPlaying: isPlaying,
                 progress: progress,
                 isShuffled: isShuffled,
+                isRepeatEnabled: isRepeatEnabled,
                 currentSong: currentSong ?? null,
                 togglePlayback: () => {
                     setPlaybackStatus((prev) =>
@@ -242,6 +273,12 @@ export function PlaybackContextProvider({
                             shufflePosition: 0,
                         };
                     });
+                },
+                toggleRepeat: () => {
+                    setPlaybackStatus((prev) => ({
+                        ...prev,
+                        isRepeatEnabled: !prev.isRepeatEnabled,
+                    }));
                 },
             }}
         >

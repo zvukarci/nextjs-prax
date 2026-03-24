@@ -21,12 +21,14 @@ export function PlaybackBar(props: {
         isPlaying,
         progress,
         isShuffled,
+        isRepeatEnabled,
         currentSong,
         togglePlayback,
         seekTo,
         handleNext,
         handleBack,
         toggleShuffle,
+        toggleRepeat,
     } = useContext(PlaybackContext);
 
     const duration = currentSong?.duration || 0;
@@ -147,6 +149,24 @@ export function PlaybackBar(props: {
                             className="w-4 h-4"
                         >
                             <path d="M5.055 7.06c-1.25-.714-2.805.189-2.805 1.628v8.123c0 1.44 1.555 2.342 2.805 1.628L12 14.471v2.34c0 1.44 1.555 2.342 2.805 1.628l7.108-4.061c1.26-.72 1.26-2.536 0-3.256L14.805 7.06C13.555 6.346 12 7.25 12 8.688v2.34L5.055 7.06z" />
+                        </svg>
+                    </button>
+                    <button
+                        className={`btn btn-circle btn-sm btn-ghost hover:bg-green-600 ${
+                            isRepeatEnabled ? "bg-green-600" : ""
+                        }`}
+                        onClick={toggleRepeat}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-repeat"
+                            viewBox="0 0 16 16"
+                        >
+                            <path d="M11 1.5a.5.5 0 0 1 .5-.5H14a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.707l-1.146 1.147a5 5 0 0 0-7.07 0l-.708.707a.5.5 0 1 1-.708-.707l.708-.707a6 6 0 0 1 8.485 0L14 1.793V1.5a.5.5 0 0 1-.5-.5h-2A.5.5 0 0 1 11 1.5" />
+                            <path d="M5 14.5a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5V12a.5.5 0 0 1 1 0v1.293l1.146-1.147a5 5 0 0 0 7.07 0l.708-.707a.5.5 0 1 1 .708.707l-.708.707a6 6 0 0 1-8.485 0L2 14.207V14.5a.5.5 0 0 1 .5.5h2A.5.5 0 0 1 5 14.5" />
                         </svg>
                     </button>
                 </div>

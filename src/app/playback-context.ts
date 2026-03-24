@@ -12,12 +12,14 @@ interface PlaybackContextState {
     isPlaying: boolean;
     progress: number;
     isShuffled: boolean;
+    isRepeatEnabled: boolean;
     currentSong: Song | null;
     togglePlayback: () => void;
     seekTo: (newProgress: number) => void;
     handleNext: () => void;
     handleBack: () => void;
     toggleShuffle: () => void;
+    toggleRepeat: () => void;
 }
 
 export const PlaybackContext = createContext<PlaybackContextState>({
@@ -25,10 +27,12 @@ export const PlaybackContext = createContext<PlaybackContextState>({
     isPlaying: false,
     progress: 0,
     isShuffled: false,
+    isRepeatEnabled: false,
     currentSong: null,
     togglePlayback: () => {},
     seekTo: () => {},
     handleNext: () => {},
     handleBack: () => {},
     toggleShuffle: () => {},
+    toggleRepeat: () => {},
 });
