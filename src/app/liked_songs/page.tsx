@@ -1,6 +1,7 @@
 import { getDb } from "@/lib/db";
 import { getUser } from "@/lib/user";
 import { RemoveLikeButton } from "@/app/components/RemoveLikeButton";
+import { AddSongToQueueButton } from "../components/AddSongToQueueButton";
 
 export default async function LikedSongsPage() {
     const db = getDb();
@@ -53,6 +54,12 @@ export default async function LikedSongsPage() {
                                     <RemoveLikeButton
                                         userId={userId}
                                         songId={song.id}
+                                    />
+                                    <AddSongToQueueButton
+                                        songId={song.id}
+                                        songName={song.name}
+                                        songAuthor=""
+                                        songDuration={song.duration}
                                     />
                                 </td>
                             </tr>

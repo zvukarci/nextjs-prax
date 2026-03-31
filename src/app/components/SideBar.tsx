@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import { PlaybackContext } from "../playback-context";
+import { RemoveSongFromQueueButton } from "./RemoveSongFromQueueButton";
 
 export function SideBar() {
     const { isPlaying, queue, currentSong } = useContext(PlaybackContext);
@@ -23,6 +24,7 @@ export function SideBar() {
                             <li key={song.id}>
                                 <span>{song.name}</span>
                                 <span>{song.author}</span>
+                                <RemoveSongFromQueueButton songId={song.id} />
                             </li>
                         ))}
                     </ul>

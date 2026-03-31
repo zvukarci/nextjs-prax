@@ -171,22 +171,24 @@ export function PlaybackBar(props: {
                     </button>
                 </div>
 
-                <div className="flex items-center gap-2 w-full">
-                    <span className="text-xs text-gray-500 w-10 text-right">
-                        {formatDuration(currentProgress)}
-                    </span>
-                    <input
-                        type="range"
-                        min={0}
-                        max={duration}
-                        value={currentProgress}
-                        onChange={(e) => seekTo(Number(e.target.value))}
-                        className="range range-xs flex-1 cursor-pointer"
-                    />
-                    <span className="text-xs text-gray-500 w-10">
-                        -{formatDuration(Math.max(0, currentRemaining))}
-                    </span>
-                </div>
+                {currentSongId != null && (
+                    <div className="flex items-center gap-2 w-full">
+                        <span className="text-xs text-gray-500 w-10 text-right">
+                            {formatDuration(currentProgress)}
+                        </span>
+                        <input
+                            type="range"
+                            min={0}
+                            max={duration}
+                            value={currentProgress}
+                            onChange={(e) => seekTo(Number(e.target.value))}
+                            className="range range-xs flex-1 cursor-pointer"
+                        />
+                        <span className="text-xs text-gray-500 w-10">
+                            -{formatDuration(Math.max(0, currentRemaining))}
+                        </span>
+                    </div>
+                )}
             </div>
             <div className="w-48 min-w-48"></div>
         </div>

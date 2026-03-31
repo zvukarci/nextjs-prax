@@ -3,6 +3,9 @@ import { getUser } from "@/lib/user";
 import Link from "next/link";
 import { AddSongToPlaylist } from "@/app/components/AddSongToPlaylist";
 import { AddLikeButton } from "@/app/components/AddLikeButton";
+import { AddSongToQueueButton } from "@/app/components/AddSongToQueueButton";
+import { AddPlaylistToQueueButton } from "@/app/components/AddPlaylistToQueueButton";
+import { Song } from "@/app/playback-context";
 
 export default async function AlbumDetailPage({
     params,
@@ -27,11 +30,18 @@ export default async function AlbumDetailPage({
         .where("albums.id", "=", albumId)
         .executeTakeFirst();
 
-    const songs = await db
+    const songsFromDb = await db
         .selectFrom("songs")
         .select(["songs.id", "songs.name", "songs.duration"])
         .where("album_id", "=", albumId)
         .execute();
+
+    const songs: Song[] = songsFromDb.map((song) => ({
+        id: song.id,
+        name: song.name,
+        author: album?.author_name || "",
+        duration: song.duration,
+    }));
 
     const playlists = await db
         .selectFrom("playlists")
@@ -49,6 +59,7 @@ export default async function AlbumDetailPage({
                         ? new Date(Number(album.release_date)).toDateString()
                         : ""}
                 </time>
+                <AddPlaylistToQueueButton songs={songs} />
             </section>
             <section className="overflow-x-auto">
                 <table className="table ">
@@ -61,17 +72,14 @@ export default async function AlbumDetailPage({
                         </tr>
                     </thead>
                     <tbody>
-                        {songs?.map((song, index) => (
+                        {songs.map((song, index) => (
                             <tr key={song.id}>
                                 <td>{index + 1}</td>
                                 <td>{song.name}</td>
                                 <td>
                                     <time>
                                         {Math.floor(song.duration / 60)}:
-                                        {(
-                                            song.duration -
-                                            Math.floor(song.duration / 60) * 60
-                                        )
+                                        {(song.duration % 60)
                                             .toString()
                                             .padStart(2, "0")}
                                     </time>
@@ -84,6 +92,12 @@ export default async function AlbumDetailPage({
                                     <AddLikeButton
                                         userId={userId}
                                         songId={song.id}
+                                    />
+                                    <AddSongToQueueButton
+                                        songId={song.id}
+                                        songName={song.name}
+                                        songAuthor={song.author}
+                                        songDuration={song.duration}
                                     />
                                 </td>
                             </tr>

@@ -20,6 +20,8 @@ interface PlaybackContextState {
     handleBack: () => void;
     toggleShuffle: () => void;
     toggleRepeat: () => void;
+    addSongToQueue: (song: Song) => void;
+    addPlaylistToQueue: (songs: Song[]) => void;
 }
 
 export const PlaybackContext = createContext<PlaybackContextState>({
@@ -35,4 +37,6 @@ export const PlaybackContext = createContext<PlaybackContextState>({
     handleBack: () => {},
     toggleShuffle: () => {},
     toggleRepeat: () => {},
+    addSongToQueue: () => {},
+    addPlaylistToQueue: () => {},
 });

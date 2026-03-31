@@ -4,6 +4,9 @@ import { RemovePlaylistSongButton } from "@/app/components/RemovePlaylistSongBut
 import { DeletePlaylistButton } from "@/app/components/DeletePlaylistButton";
 import { UpdatePlaylistButton } from "@/app/components/UpdatePlaylistButton";
 import { AddLikeButton } from "@/app/components/AddLikeButton";
+import { AddSongToQueueButton } from "@/app/components/AddSongToQueueButton";
+import { AddPlaylistToQueueButton } from "@/app/components/AddPlaylistToQueueButton";
+import { Song } from "@/app/playback-context";
 
 export default async function PlaylistDetailPage({
     params,
@@ -30,7 +33,7 @@ export default async function PlaylistDetailPage({
         return <div>Playlist not found</div>;
     }
 
-    const songs = await db
+    const songsdb = await db
         .selectFrom("playlists_songs")
         .innerJoin("songs", "songs.id", "song_id")
         .select([
@@ -42,6 +45,13 @@ export default async function PlaylistDetailPage({
         .where("playlists_songs.playlist_id", "=", playlistId)
         .execute();
 
+    const songs: Song[] = songsdb.map((song) => ({
+        id: song.song_id,
+        name: song.name,
+        author: "",
+        duration: song.duration,
+    }));
+
     return (
         <main className="container mx-auto px-4 py-12">
             <section>
@@ -51,6 +61,7 @@ export default async function PlaylistDetailPage({
                     playlistName={playlist.name}
                 />
                 <DeletePlaylistButton playlistId={playlistId} />
+                <AddPlaylistToQueueButton songs={songs} />
             </section>
             <section className="overflow-x-auto">
                 <table className="table ">
@@ -63,17 +74,14 @@ export default async function PlaylistDetailPage({
                         </tr>
                     </thead>
                     <tbody>
-                        {songs?.map((song, index) => (
+                        {songsdb.map((song, index) => (
                             <tr key={song.playlist_song_id}>
                                 <td>{index + 1}</td>
                                 <td>{song.name}</td>
                                 <td>
                                     <time>
                                         {Math.floor(song.duration / 60)}:
-                                        {(
-                                            song.duration -
-                                            Math.floor(song.duration / 60) * 60
-                                        )
+                                        {(song.duration % 60)
                                             .toString()
                                             .padStart(2, "0")}
                                     </time>
@@ -86,6 +94,12 @@ export default async function PlaylistDetailPage({
                                     <AddLikeButton
                                         userId={userId}
                                         songId={song.song_id}
+                                    />
+                                    <AddSongToQueueButton
+                                        songId={song.song_id}
+                                        songName={song.name}
+                                        songAuthor=""
+                                        songDuration={song.duration}
                                     />
                                 </td>
                             </tr>
