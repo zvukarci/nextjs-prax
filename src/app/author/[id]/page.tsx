@@ -1,4 +1,6 @@
+import { FollowAuthorButton } from "@/app/components/FollowAuthorButton";
 import { getDb } from "@/lib/db";
+import { getUser } from "@/lib/user";
 import Link from "next/link";
 
 export default async function AuthorDetailPage({
@@ -6,6 +8,8 @@ export default async function AuthorDetailPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const userId = await getUser();
+
     const { id } = await params;
     const authorId = Number(id);
 
@@ -28,6 +32,7 @@ export default async function AuthorDetailPage({
             <section>
                 <h1>{author?.name}</h1>
                 <p className="text-neutral-700">{author?.bio}</p>
+                <FollowAuthorButton userId={userId} authorId={authorId} />
             </section>
             <section className="overflow-x-auto">
                 <table className="table ">
@@ -51,7 +56,7 @@ export default async function AuthorDetailPage({
                                     <time>
                                         {album.release_date
                                             ? new Date(
-                                                  Number(album.release_date)
+                                                  Number(album.release_date),
                                               ).toDateString()
                                             : ""}
                                     </time>

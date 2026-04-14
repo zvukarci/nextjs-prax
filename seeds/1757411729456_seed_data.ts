@@ -3,13 +3,14 @@ import { faker } from "@faker-js/faker";
 import type { Kysely } from "kysely";
 
 export async function seed(db: Kysely<DB>): Promise<void> {
-    await db.deleteFrom("songs").execute();
-    await db.deleteFrom("albums").execute();
-    await db.deleteFrom("authors").execute();
+    await db.deleteFrom("following_authors").execute();
+    await db.deleteFrom("playback_events").execute();
+    await db.deleteFrom("user_liked_songs").execute();
     await db.deleteFrom("playlists_songs").execute();
     await db.deleteFrom("playlists").execute();
-    await db.deleteFrom("user_liked_songs").execute();
-    await db.deleteFrom("playback_events").execute();
+    await db.deleteFrom("albums").execute();
+    await db.deleteFrom("authors").execute();
+    await db.deleteFrom("songs").execute();
 
     for (let i = 0; i < 20; i += 1) {
         const numBioParagraphs = faker.number.int({ min: 0, max: 5 });
@@ -78,7 +79,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
         .insertInto("users")
         .values({
             id: 1,
-            name: "Test",
+            name: "test",
             email: "test@test.com",
             password: "test123",
         })
@@ -140,6 +141,23 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                     })
                     .execute();
             }
+        }
+
+        const numFollowingAuthors = faker.number.int({ min: 5, max: 10 });
+        const uniqueAuthors = faker.helpers.uniqueArray(
+            authors.map((author) => author.id),
+            numFollowingAuthors,
+        );
+
+        for (let i = 0; i < numFollowingAuthors; i++) {
+            await db
+                .insertInto("following_authors")
+                .values({
+                    user_id: user.id,
+                    author_id: uniqueAuthors[i],
+                    following_at: faker.date.past().getTime(),
+                })
+                .execute();
         }
 
         const numPlaybackEvents = faker.number.int({ min: 1, max: 10 });

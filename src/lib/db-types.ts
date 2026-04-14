@@ -17,6 +17,13 @@ export interface Authors {
   bio: string | null;
 }
 
+export interface FollowingAuthors {
+  id: Generated<number>;
+  user_id: number;
+  author_id: number;
+  following_at: number;
+}
+
 export interface PlaybackEvents {
   id: Generated<number>;
   event_name: string;
@@ -60,6 +67,7 @@ export interface Users {
 export interface DB {
   albums: Albums;
   authors: Authors;
+  following_authors: FollowingAuthors;
   playback_events: PlaybackEvents;
   playlists: Playlists;
   playlists_songs: PlaylistsSongs;
